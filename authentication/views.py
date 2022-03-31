@@ -920,3 +920,17 @@ def contribute_bug2(request):
 #This function is used to search knowledge by using tags
 def searching2(request):
     return render(request,"authentication/searching2.html")
+
+def adminview(request):
+    # conn = MongoClient()
+    # db=conn.Lucid
+    # collection=db.knowledge
+    # count =collection.count({'ptype':'defect'})
+    
+    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "admin"))
+    session=graphdb.session()
+    #q2='''match (n{ptype: 'defect'}) RETURN count(*)'''
+    q2='''MATCH (kp:knowledge {ptype:'defect'}) RETURN kp'''
+    count=session.run(q2)
+  
+    return render(request,'adminview.html',{'count':count} )
