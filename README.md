@@ -12,6 +12,7 @@ For running the code in your systems you have to follow below steps:
 python manage.py makemigrations
 python manage.py migrate
 python manage.py runserver
+
 After these commands ran successfully you will get a link in the terminal
 Open that link in your browser and website will start running.
 I am attaching some images for reference.
