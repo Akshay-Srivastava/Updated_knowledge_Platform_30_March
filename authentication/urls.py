@@ -44,4 +44,5 @@ urlpatterns = [
    path('contribute_bug', views.contribute_bug, name="contribute_bug"),
    path('contribute_bug2', views.contribute_bug2, name="contribute_bug2"),
    path('searching2', views.searching2, name="searching2"),
+   path('adminview', views.adminview, name="adminview"),
 ]
