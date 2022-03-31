@@ -643,7 +643,7 @@ def your_Contribution(request):
     db=conn.Lucid
     collection=db.knowledge    
     
-    owner = gfName  #here gfName is global variable whose value is userfirstname
+    owner = global_First_Name  #here gfName is global variable whose value is userfirstname
     print(owner)
     #login=Contribute.objects.filter(ptype__contains=searched) 
     defectdata =collection.find({'owner':owner})
@@ -714,13 +714,13 @@ def update_data(request):
         if(kinsisghts==""):
             kinsisghts=p6
 
-        db.knowledge.update({'ID':uniqueId},{'ID':uniqueId,'ptype':ptype,'psummary':psummary,'pdescription':pdescription,'products':products,'kanalysis':kanalysis,'kinsisghts':kinsisghts,'owner':gfName,'tags':finaltags})    #update this knowledge in MongoDb
+        db.knowledge.update({'ID':uniqueId},{'ID':uniqueId,'ptype':ptype,'psummary':psummary,'pdescription':pdescription,'products':products,'kanalysis':kanalysis,'kinsisghts':kinsisghts,'owner':global_First_Name,'tags':finaltags})    #update this knowledge in MongoDb
         messages.success(request, "Data Updated Successfully")
         p2=""
         for i in products:
             p2+=i+","
         p2=p2[:-1]
-        update_to_neo(pdescription,psummary,p2, kanalysis,kinsisghts,gfName,ptype, uniqueId) #update this knowledge in neo4j
+        update_to_neo(pdescription,psummary,p2, kanalysis,kinsisghts,global_First_Name,ptype, uniqueId) #update this knowledge in neo4j
     return render(request, "authentication/index.html")       
 
 #This function is used to update data in neo4j when user update any knowledge
