@@ -405,7 +405,7 @@ def contri_to_neo(ppdescription,ppsummary,pproducts, pkanalysis,pkinsisghts,pown
     
     #added neo4j database
     # neo4j_create_statemenet = "create (a: Problem{name:'%s'}), (k:Owner {owner:'%s'}), (l:Problem_Type{type:'%s'}),(m:Problem_Summary{summary:'%s'}), (n:Probelm_Description{description:'%s'}),(o:Knowledge_Analysis{analysis:'%s'}), (p:Knowledge_Insights{kinsisghts:'%s'}), (a)-[:Owner]->(k), (a)-[:Problem_Type]->(l), (a)-[:Problem_Summary]->(m), (a)-[:Problem_Description]->(n), (a)-[:Knowledge_analysis]->(o), (a)-[:Knowledge_insights]->(p)"%("Problem",powner,pptype,ppsummary,ppdescription,pkanalysis,pkinsisghts)
-    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "admin"))
+    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "Smriti@281999"))
     session=graphdb.session()
     q2='''Merge (kp:knowledge {pdescription: '%s', ptype: '%s', psummary: '%s',id: '%s' , kanalysis:'%s', kinsisghts:'%s', owner:'%s', products:'%s',bugid:'%s'})
     WITH kp
@@ -429,7 +429,7 @@ def defect(request):
     # db=conn.Lucid
     # collection=db.knowledge
     # defectdata =collection.find({'ptype':'defect'})
-    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "admin"))
+    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "Smriti@281999"))
     session=graphdb.session()
     q3="Match (t:Problem_Type)-[r:PROBLEM_DESCRIPTION]-> (c:Problem_Description) return t.ptype AS p_type,c.pdescription AS p_description"
     nodes=session.run(q3)
@@ -629,7 +629,7 @@ def search(request):
     # collection=db.knowledge
     if request.method=="POST":
         searched=request.POST['searched']
-    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "admin")) #Connection to neo4j
+    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "Smriti@281999")) #Connection to neo4j
     session=graphdb.session()
     q3='''CALL db.index.fulltext.queryNodes("kpindex", "%s") YIELD node RETURN node''' %(searched)   #This is fulltext search query
     nodes=session.run(q3) 
@@ -730,7 +730,7 @@ def update_to_neo(ppdescription,ppsummary,pproducts, pkanalysis,pkinsisghts,pown
     
     #added neo4j database
     # neo4j_create_statemenet = "create (a: Problem{name:'%s'}), (k:Owner {owner:'%s'}), (l:Problem_Type{type:'%s'}),(m:Problem_Summary{summary:'%s'}), (n:Probelm_Description{description:'%s'}),(o:Knowledge_Analysis{analysis:'%s'}), (p:Knowledge_Insights{kinsisghts:'%s'}), (a)-[:Owner]->(k), (a)-[:Problem_Type]->(l), (a)-[:Problem_Summary]->(m), (a)-[:Problem_Description]->(n), (a)-[:Knowledge_analysis]->(o), (a)-[:Knowledge_insights]->(p)"%("Problem",powner,pptype,ppsummary,ppdescription,pkanalysis,pkinsisghts)
-    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "admin"))
+    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "Smriti@281999"))
     session=graphdb.session()
     q3='''MATCH (p {id:'%s'})
     SET p = {id:'%s',owner: '%s', pdescription: '%s',
@@ -748,7 +748,7 @@ def delete_data(request):
      db=conn.Lucid
      collection=db.knowledge
      db.knowledge.remove({'ID':uniqueId})
-     graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "admin"))
+     graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "Smriti@281999"))
      session=graphdb.session()
      q33=''' MATCH (n {id:'%s'})
      DETACH DELETE n''' %(str(uniqueId))
@@ -919,7 +919,11 @@ def contribute_bug2(request):
 
 #This function is used to search knowledge by using tags
 def searching2(request):
-    return render(request,"authentication/searching2.html")
+    conn = MongoClient()
+    db=conn.Lucid
+    collection=db.knowledge
+    defectdata =collection.find({'ptype':'defect'})
+    return render(request, 'authentication/searching2.html', {'defectdata': defectdata.clone()})
 
 def adminview(request):
     # conn = MongoClient()
@@ -927,7 +931,7 @@ def adminview(request):
     # collection=db.knowledge
     # count =collection.count({'ptype':'defect'})
     
-    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "admin"))
+    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "Smriti@281999"))
     session=graphdb.session()
     #q2='''match (n{ptype: 'defect'}) RETURN count(*)'''
     q2='''MATCH (kp:knowledge {ptype:'defect'}) RETURN kp'''
