@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import logout, authenticate, login
 from matplotlib import gridspec
+from numpy import full
 from pymongo import MongoClient
 from email import message
 from email.policy import HTTP
@@ -52,6 +53,8 @@ stop_words = list(set(stopwords.words('english')))
 
 
 global_First_Name=""
+global_Last_Name=""
+fullname=""
 uniqueId=""
 uName=""
 emailId=""
@@ -135,10 +138,14 @@ def signup(request):
         myuser.last_name = lname
         myuser.is_active = False
         myuser.save()
+        global global_Last_Name 
+        global_Last_Name = lname
         global uName
         uName = fname
         global emailId
         emailId = email 
+        global fullname
+        fullname = fname + ' ' + lname 
 
         
         messages.success(request, " We have sent account activation link to your registered mail id. Kindly click on the link to activate your account .")
@@ -554,16 +561,19 @@ def freshdeskdisplay(request):
 
 
 def jira(request):
-    conn = mod4.connect("User=knowledgeplatform64@gmail.com;APIToken=Ws7f12FDqg9MCO2WLDHw0AA2;Url=https://knowledgeplatform64.atlassian.net")
+    conn = mod4.connect("User=knowledgeplatform64@gmail.com;APIToken=OqL3v0QnKRzw9qE3EXG9C5D7;Url=https://knowledgeplatform64.atlassian.net")
     # cur = conn.execute("SELECT Summary, Id, Description FROM Issues where id=10000")
     if request.method == 'POST':
         bug_id = request.POST['jiraid']
-        aname = request.POST['aname']
-        print(bug_id,aname)
+        global fullname
+        print(bug_id,fullname)
+        
         cmd = "SELECT Summary, Id, Description, AssigneeDisplayName FROM Issues WHERE Id = ? and AssigneeDisplayName=?"
-        params = [bug_id, aname]
+        
+        params = [bug_id, fullname]
         cur = conn.execute(cmd, params)
         rs = cur.fetchall()
+        # if fullname == AssigneeDisplayName
         for row in rs:
             print(row)
 
@@ -919,11 +929,28 @@ def contribute_bug2(request):
 
 #This function is used to search knowledge by using tags
 def searching2(request):
-    conn = MongoClient()
-    db=conn.Lucid
-    collection=db.knowledge
-    defectdata =collection.find({'ptype':'defect'})
-    return render(request, 'authentication/searching2.html', {'defectdata': defectdata.clone()})
+    searched=False
+    tagsearch=False
+    if request.method=="POST":
+        searched=request.POST.get('search', False);
+        tagsearch=request.POST.get('1', False);
+    if(tagsearch!=False):
+        print(tagsearch)
+        graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "admin"))
+        session=graphdb.session()
+        q3='''CALL db.index.fulltext.queryNodes("kpindex","%s" ) YIELD node
+        match (n{id:node.id})-->(tags)
+        where tags.tagname='%s'
+        return node''' %(tagsearch,tagsearch.upper())
+        defectdata=session.run(q3)
+    else:
+        graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "admin"))
+        session=graphdb.session()
+        q2='''match(node:knowledge) return node'''
+        defectdata=session.run(q2)
+        # print(*defectdata)
+    
+    return render(request,"authentication/index.html",{"defectdata":defectdata})
 
 def adminview(request):
     # conn = MongoClient()

@@ -13,7 +13,7 @@ admin.site.site_title = "Knowledge Platform Admin Portal"
 admin.site.index_title = "Welcome to CData Knowledge Platform"
 
 urlpatterns = [
-   path('', views.index, name="home"),
+   path('', views.searching2, name="home"),
    path('signup', views.signup, name="signup"),
    path("contribute", views.contribute, name='contribute'),
    path('signin', views.signin, name="signin"),
@@ -43,6 +43,6 @@ urlpatterns = [
    path('change_password_form', views.change_password_form, name="change_password_form"),
    path('contribute_bug', views.contribute_bug, name="contribute_bug"),
    path('contribute_bug2', views.contribute_bug2, name="contribute_bug2"),
-   path('searching2', views.searching2, name="searching2"),
+   # path('', views.searching2, name="searching2"),
    path('adminview', views.adminview, name="adminview"),
 ]
