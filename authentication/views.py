@@ -561,22 +561,19 @@ def freshdeskdisplay(request):
 
 
 def jira(request):
-    conn = mod4.connect("User=knowledgeplatform64@gmail.com;APIToken=OqL3v0QnKRzw9qE3EXG9C5D7;Url=https://knowledgeplatform64.atlassian.net")
-    # cur = conn.execute("SELECT Summary, Id, Description FROM Issues where id=10000")
+    conn = mod4.connect("User=knowledgeplatform64@gmail.com;APIToken= ;Url=https://knowledgeplatform64.atlassian.net")
+            
     if request.method == 'POST':
         bug_id = request.POST['jiraid']
-        global fullname
-        print(bug_id,fullname)
-        
+        # aname = request.POST['aname']
+        aname = "Smriti Misra"
+        print(bug_id,aname)
         cmd = "SELECT Summary, Id, Description, AssigneeDisplayName FROM Issues WHERE Id = ? and AssigneeDisplayName=?"
-        
-        params = [bug_id, fullname]
+        params = [bug_id, aname]
         cur = conn.execute(cmd, params)
         rs = cur.fetchall()
-        # if fullname == AssigneeDisplayName
         for row in rs:
             print(row)
-
 
         global d
         d = {'Summary':[], 'BugId':[], 'Description':[], 'Assignee':[]}
@@ -958,7 +955,7 @@ def adminview(request):
     # collection=db.knowledge
     # count =collection.count({'ptype':'defect'})
     
-    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "Smriti@281999"))
+    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "admin"))
     session=graphdb.session()
     #q2='''match (n{ptype: 'defect'}) RETURN count(*)'''
     q2='''MATCH (kp:knowledge {ptype:'defect'}) RETURN kp'''
