@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth import logout, authenticate, login
 from matplotlib import gridspec
+from numpy import full
 from pymongo import MongoClient
 from email import message
 from email.policy import HTTP
@@ -52,6 +53,8 @@ stop_words = list(set(stopwords.words('english')))
 
 
 global_First_Name=""
+global_Last_Name=""
+fullname=""
 uniqueId=""
 uName=""
 emailId=""
@@ -135,10 +138,14 @@ def signup(request):
         myuser.last_name = lname
         myuser.is_active = False
         myuser.save()
+        global global_Last_Name 
+        global_Last_Name = lname
         global uName
         uName = fname
         global emailId
         emailId = email 
+        global fullname
+        fullname = fname + ' ' + lname 
 
         
         messages.success(request, " We have sent account activation link to your registered mail id. Kindly click on the link to activate your account .")
@@ -405,7 +412,7 @@ def contri_to_neo(ppdescription,ppsummary,pproducts, pkanalysis,pkinsisghts,pown
     
     #added neo4j database
     # neo4j_create_statemenet = "create (a: Problem{name:'%s'}), (k:Owner {owner:'%s'}), (l:Problem_Type{type:'%s'}),(m:Problem_Summary{summary:'%s'}), (n:Probelm_Description{description:'%s'}),(o:Knowledge_Analysis{analysis:'%s'}), (p:Knowledge_Insights{kinsisghts:'%s'}), (a)-[:Owner]->(k), (a)-[:Problem_Type]->(l), (a)-[:Problem_Summary]->(m), (a)-[:Problem_Description]->(n), (a)-[:Knowledge_analysis]->(o), (a)-[:Knowledge_insights]->(p)"%("Problem",powner,pptype,ppsummary,ppdescription,pkanalysis,pkinsisghts)
-    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "admin"))
+    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "Smriti@281999"))
     session=graphdb.session()
     q2='''Merge (kp:knowledge {pdescription: '%s', ptype: '%s', psummary: '%s',id: '%s' , kanalysis:'%s', kinsisghts:'%s', owner:'%s', products:'%s',bugid:'%s'})
     WITH kp
@@ -429,7 +436,7 @@ def defect(request):
     # db=conn.Lucid
     # collection=db.knowledge
     # defectdata =collection.find({'ptype':'defect'})
-    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "admin"))
+    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "Smriti@281999"))
     session=graphdb.session()
     q3="Match (t:Problem_Type)-[r:PROBLEM_DESCRIPTION]-> (c:Problem_Description) return t.ptype AS p_type,c.pdescription AS p_description"
     nodes=session.run(q3)
@@ -554,11 +561,12 @@ def freshdeskdisplay(request):
 
 
 def jira(request):
-    conn = mod4.connect("User=knowledgeplatform64@gmail.com;APIToken=Ws7f12FDqg9MCO2WLDHw0AA2;Url=https://knowledgeplatform64.atlassian.net")
-    # cur = conn.execute("SELECT Summary, Id, Description FROM Issues where id=10000")
+    conn = mod4.connect("User=knowledgeplatform64@gmail.com;APIToken= ;Url=https://knowledgeplatform64.atlassian.net")
+            
     if request.method == 'POST':
         bug_id = request.POST['jiraid']
-        aname = request.POST['aname']
+        # aname = request.POST['aname']
+        aname = "Smriti Misra"
         print(bug_id,aname)
         cmd = "SELECT Summary, Id, Description, AssigneeDisplayName FROM Issues WHERE Id = ? and AssigneeDisplayName=?"
         params = [bug_id, aname]
@@ -566,7 +574,6 @@ def jira(request):
         rs = cur.fetchall()
         for row in rs:
             print(row)
-
 
         global d
         d = {'Summary':[], 'BugId':[], 'Description':[], 'Assignee':[]}
@@ -629,7 +636,7 @@ def search(request):
     # collection=db.knowledge
     if request.method=="POST":
         searched=request.POST['searched']
-    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "admin")) #Connection to neo4j
+    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "Smriti@281999")) #Connection to neo4j
     session=graphdb.session()
     q3='''CALL db.index.fulltext.queryNodes("kpindex", "%s") YIELD node RETURN node''' %(searched)   #This is fulltext search query
     nodes=session.run(q3) 
@@ -730,7 +737,7 @@ def update_to_neo(ppdescription,ppsummary,pproducts, pkanalysis,pkinsisghts,pown
     
     #added neo4j database
     # neo4j_create_statemenet = "create (a: Problem{name:'%s'}), (k:Owner {owner:'%s'}), (l:Problem_Type{type:'%s'}),(m:Problem_Summary{summary:'%s'}), (n:Probelm_Description{description:'%s'}),(o:Knowledge_Analysis{analysis:'%s'}), (p:Knowledge_Insights{kinsisghts:'%s'}), (a)-[:Owner]->(k), (a)-[:Problem_Type]->(l), (a)-[:Problem_Summary]->(m), (a)-[:Problem_Description]->(n), (a)-[:Knowledge_analysis]->(o), (a)-[:Knowledge_insights]->(p)"%("Problem",powner,pptype,ppsummary,ppdescription,pkanalysis,pkinsisghts)
-    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "admin"))
+    graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "Smriti@281999"))
     session=graphdb.session()
     q3='''MATCH (p {id:'%s'})
     SET p = {id:'%s',owner: '%s', pdescription: '%s',
@@ -748,7 +755,7 @@ def delete_data(request):
      db=conn.Lucid
      collection=db.knowledge
      db.knowledge.remove({'ID':uniqueId})
-     graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "admin"))
+     graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "Smriti@281999"))
      session=graphdb.session()
      q33=''' MATCH (n {id:'%s'})
      DETACH DELETE n''' %(str(uniqueId))
@@ -919,7 +926,28 @@ def contribute_bug2(request):
 
 #This function is used to search knowledge by using tags
 def searching2(request):
-    return render(request,"authentication/searching2.html")
+    searched=False
+    tagsearch=False
+    if request.method=="POST":
+        searched=request.POST.get('search', False);
+        tagsearch=request.POST.get('1', False);
+    if(tagsearch!=False):
+        print(tagsearch)
+        graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "admin"))
+        session=graphdb.session()
+        q3='''CALL db.index.fulltext.queryNodes("kpindex","%s" ) YIELD node
+        match (n{id:node.id})-->(tags)
+        where tags.tagname='%s'
+        return node''' %(tagsearch,tagsearch.upper())
+        defectdata=session.run(q3)
+    else:
+        graphdb=GraphDatabase.driver(uri = "bolt://localhost:7687", auth=("neo4j", "admin"))
+        session=graphdb.session()
+        q2='''match(node:knowledge) return node'''
+        defectdata=session.run(q2)
+        # print(*defectdata)
+    
+    return render(request,"authentication/index.html",{"defectdata":defectdata})
 
 def adminview(request):
     # conn = MongoClient()

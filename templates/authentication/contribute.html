@@ -3,8 +3,10 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="HandheldFriendly" content="true">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
@@ -13,10 +15,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title> {% block title %}Contribute{% endblock title %} | Knowledge Platform </title>
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
     <style>
+        /* Media Queries: Tablet Landscape */
+@media screen and (max-width: 1060px) {
+    #primary { width:67%; }
+    #secondary { width:30%; margin-left:3%;}  
+}
+
+/* Media Queries: Tabled Portrait */
+@media screen and (max-width: 768px) {
+    #primary { width:100%; }
+    #secondary { width:100%; margin:0; border:none; }
+}
+img { max-width: 100%; height: auto; }
         body {
-            background: linear-gradient( rgba(0, 160, 255, 0.5) 100%, rgba(0, 144, 229, 0.5)100%), url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');
+            background: linear-gradient( rgba(0, 160, 255, 0.5) 100%, rgba(0, 144, 229, 0.5) 100%), url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');
         }
         
         * {
@@ -30,9 +47,10 @@
         }
         
         .container {
+            width: 80%;
             padding: 50px;
             background-color: white;
-            margin: 30px 80px;
+            margin-top: 30px;
             border: 2px solid #00a0ff;
             border-radius: 12px;
         }
@@ -73,7 +91,7 @@
             margin: 8px 0;
             border: none;
             cursor: pointer;
-            width: 20%;
+            width: auto;
             opacity: 0.9;
             font-size: 20px;
             align: center;
@@ -178,7 +196,7 @@
             <center>
                 <div class="form-group">
                     <label for="ptype"></label>
-                    <select id="ptype" name="ptype" required style="width:210px;height:40px;font-weight:bolder;">
+                    <select id="ptype" name="ptype" required style="width:auto;height:40px;font-weight:bolder;">
 <option value="Problem Type" style="font-size:18px;">Choose your Problem Type</option>  
 <option value="defect" style="font-size:18px;">Defect</option>  
 <option value="enhancement" style="font-size:18px;">Enhancement</option>  
@@ -202,12 +220,10 @@
             <div class="form-group">
                 <label for="CD" required><strong>Products Mapped </strong></label>&nbsp
                 <div id="pmap">
-                    <input type="checkbox" name="CD" value="CData Drivers">CData Drivers
-                    <input type="checkbox" name="CD" value="CData ArcESB">CData ArcESB
-                    <input type="checkbox" name="CD" value="CData Connect">CData Connect
-                    <input type="checkbox" name="CD" value="CData Sync">CData Sync
-                    <input type="checkbox" name="CD" value="CData Server">CData Server
-                    <input type="checkbox" name="CD" value="CData DBAmp">CData DBAmp
+                    <input type="checkbox" name="CD" value="CData ArcESB">CData ArcESB<br>
+                    <input type="checkbox" name="CD" value="CData Connect">CData Connect<br>
+                    <input type="checkbox" name="CD" value="CData Sync">CData Sync<br>
+                    <input type="checkbox" name="CD" value="CData DBAmp">CData DBAmp<br>
                 </div>
             </div><br>
 
